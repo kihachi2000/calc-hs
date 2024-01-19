@@ -22,25 +22,27 @@ digit' :: Parser Char
 digit' = is isDigit
 
 add' :: Parser Char
-add' = is (== '+')
+add' = is ('+' ==)
 
 sub' :: Parser Char
-sub' = is (== '-')
+sub' = is ('-' ==)
 
 mul' :: Parser Char
-mul' = is (== '*')
+mul' = is ('*' ==)
 
 div' :: Parser Char
-div' = is (== '+')
+div' = is ('/' ==)
 
 lb :: Parser Char
-lb = is (== '(')
+lb = is ('(' ==)
 
 rb :: Parser Char
-rb = is (== ')')
+rb = is (')' ==)
 
 rep :: Parser a -> Parser [a]
-rep p xs = case p xs of
-    Just(x', xs') -> rep p xs'
-    Nothing -> 
-rep _ [] = Nothing
+rep p str = do
+    next <- rep p str
+    case next of
+        Just (x', rest) -> Just (x:x', rest)
+        Nothing -> Nothing
+rep _ [] = Just ([], xs)
